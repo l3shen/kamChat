@@ -6,8 +6,8 @@
 
 // setup
 var app = require('express'),
-	millerChat = app(),
-	http = require('http').Server(millerChat),
+	kamChat = app(),
+	http = require('http').Server(kamChat),
 	connectMessage = 'A user has connected.',
 	disconnectMessage = 'A user has left.',
 	port = 3000,
@@ -15,18 +15,19 @@ var app = require('express'),
 	sockIO = require('socket.io')(http);
 
 // routing
-millerChat.get('/', function(req, res) {
+kamChat.get('/', function(req, res) {
 	res.sendFile(__dirname + '/index.html');
 });
 
 // set up sockets (listen to connect/disconnect/receive messages)
 sockIO.on('connection', function (socket) {
-	// on connect log to server; query user name
+
+	// query user name
 	socket.on('message', function (msg) {
 		name = msg;
 	});
 
-	// on message sent, send message to client
+	// on message sent, send message to client w/ username
 	socket.on('chat message', function (msg) {
 		msg = name + ': ' + msg;
 		sockIO.emit('chat message', msg);
