@@ -11,6 +11,7 @@ var app = require('express'),
 	connectMessage = 'A user has connected.',
 	disconnectMessage = 'A user has left.',
 	port = 3000,
+	name = '',
 	sockIO = require('socket.io')(http);
 
 // routing
@@ -20,11 +21,14 @@ millerChat.get('/', function(req, res) {
 
 // set up sockets (listen to connect/disconnect/receive messages)
 sockIO.on('connection', function (socket) {
-	// on connect log to server
-	console.log(connectMessage);
+	// on connect log to server; query user name
+	socket.on('message', function (msg) {
+		name = msg;
+	});
 
 	// on message sent, send message to client
 	socket.on('chat message', function (msg) {
+		msg = name + ': ' + msg;
 		sockIO.emit('chat message', msg);
 	});
 
